@@ -1,7 +1,11 @@
 package frc.robot.SubSystem.Climb;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.SubSystem.Logging.NerdLog;
 
@@ -40,5 +44,26 @@ public class Climb implements ClimbIO{
 
     //TODO: configure your darn motor
     private void configureMotor(boolean inverted) {
+         SparkMaxConfig config = new SparkMaxConfig();
+
+        
+        config.inverted(inverted)
+        .voltageCompensation(12)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(20);
+         config.signals.absoluteEncoderPositionAlwaysOn(true)
+        .absoluteEncoderPositionPeriodMs((int) 1000/100)
+        .absoluteEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(20)
+        .busVoltagePeriodMs(20)
+        .outputCurrentPeriodMs(20);
+        //config.encoder.positionConversionFactor(gearbox);
+
+        //LimitSwitch
+        //config.limitSwitch.forwardLimitSwitchPosition(forwardLimit);
+        //config.limitSwitch.reverseLimitSwitchPosition(reverselimit);
+
+        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     }
 }

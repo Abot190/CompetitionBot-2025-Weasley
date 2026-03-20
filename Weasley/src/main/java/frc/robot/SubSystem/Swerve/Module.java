@@ -95,7 +95,7 @@ public class Module extends ModuleMotorConfig implements ModuleIO {
             //manual cosine scaling because the abs encoder doesnt want to work for the scaling:
             desiredState.speedMetersPerSecond *= Math.cos(turnPID.getError()); 
       
-            driveMotor.setVoltage(-desiredState.speedMetersPerSecond*3); // was *5
+            driveMotor.setVoltage(-desiredState.speedMetersPerSecond*5); // was *5
         
 
         //record changes:

@@ -76,28 +76,10 @@ public class RobotContainer {
 
   public void disabledPeriodic() {
 
-    //PID changing
-   //Controller.getPIDIncrease().onTrue(new InstantCommand(() -> driveCmd.ChangePID(swerve, PIDModes[PIDModeSelection], true), swerve));//driveCmd.ChangePID(swerve, PIDModes[PIDModeSelection], true));
-   //Controller.getPIDDecrease().onTrue(new InstantCommand(() -> driveCmd.ChangePID(swerve, PIDModes[PIDModeSelection], false), swerve));
-
-   //PID Mode switching
-  /*  Controller.getPIDSwitchPositive().onTrue(new InstantCommand( () -> {
-    if (PIDModeSelection < PIDModes.length) PIDModeSelection++;
-    else PIDModeSelection = 0;
-   }, swerve));
-   Controller.getPIDSwitchNegative().onTrue(new InstantCommand(() -> {
-    if (PIDModeSelection >= 0) PIDModeSelection--;
-    else PIDModeSelection = 3;
-   }, swerve));
-   */
-
   }
 
   private void configureControls() {
-    /*swerve.setDefaultCommand(driveCmd.JoystickDrive(swerve, Controller.getDriveX() * driveSpeedFactor,
-    Controller.getDriveY() *  driveSpeedFactor, 
-    Controller.getDriveTwist() * driveSpeedFactor));*/
-    
+   
   }
 
 

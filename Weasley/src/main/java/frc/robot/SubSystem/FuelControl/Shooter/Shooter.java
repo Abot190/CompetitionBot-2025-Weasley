@@ -73,7 +73,7 @@ public class Shooter implements ShooterIO {
         NerdLog.logBooleanVariable("Fuel Control/Shooter/ Shooter is Shooting", isShooting());
         NerdLog.logBooleanVariable("Fuel Control/Shooter/ Shooter is Above set Speed", Units.rotationsPerMinuteToRadiansPerSecond(encoder.getVelocity()) > targetSpeedRadPerSec);
         NerdLog.logDouble("Fuel Control/Shooter/ Encoder Velocity RadPerSec", Units.rotationsPerMinuteToRadiansPerSecond(encoder.getVelocity()));
-
+        NerdLog.logDouble("Fuel Control/Shooter/ target speed RadPerSec", targetSpeedRadPerSec);
         targetSpeedRadPerSec = targetSpeedEntry.getDouble(0.00);
         RequestedVolts = requestedVoltageEntry.getDouble(0.00);
         bangCrtlTolerance = bangCrtlToleranceEntry.getDouble(0.00);

@@ -7,6 +7,16 @@ import frc.robot.SubSystem.Logging.NerdLog;
 
 public class JoystickIO implements ControllerIO{
 
+    /*
+     * brody wants:
+     * $100000000000
+     * throttle for shooter,
+     * 
+     * triggers for hopper
+     * 
+     * a and b for climb
+     */
+
       private enum Axis {
          // Joystick
         JOYSTICK_FORWARD(1), JOYSTICK_SIDE(0), JOYSTICK_ROTATION(5), // rotation also equals twist, if thats easier to recognize
@@ -92,12 +102,12 @@ public class JoystickIO implements ControllerIO{
 
     @Override
     public boolean climbUp() {
-        return false;
+        return joystick.getRawButton(Buttons.A.getButton());
     }
 
     @Override
     public boolean climbDown() {
-        return false;
+        return joystick.getRawButton(Buttons.B.getButton());
     }
 
 }

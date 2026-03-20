@@ -25,11 +25,18 @@ public class AutoPicker {
     private static VisionIO vision;
     private static ChassisSpeeds DesiredChassisSpeeds;
 
+    /**
+     *  do this is the robotContainer
+     * @param drive
+     * @param fuelCrtl
+     * @param climb
+     * @param vision
+     */
     public static void SupplySubSystems(Drive drive, FuelControl fuelCrtl, ClimbIO climb, VisionIO vision) {
     }
 
     public static enum AutoRoutines {
-        SHOOT_BALLS, CLIMB, SHOOT_BALLS_AND_CLIMB, SHOOT_BALLS_AND_COLLECT_DEPOSITE, SHOOTBALLS_AND_GO_MIDDLE 
+        SHOOT_BALLS, CLIMB, SHOOT_BALLS_AND_CLIMB, SHOOT_BALLS_AND_COLLECT_DEPOSITE, SHOOT_BALLS_AND_GO_MIDDLE 
     }
 
     public static void PickAuto(AutoRoutines routine) {
@@ -37,6 +44,8 @@ public class AutoPicker {
             case SHOOT_BALLS: ShootBalls(); break;
             case CLIMB: findClimbRack(); Climb(); break;
             case SHOOT_BALLS_AND_CLIMB: ShootBalls(); findClimbRack(); Climb(); break; // could use recursion, not lazy enough
+            case SHOOT_BALLS_AND_COLLECT_DEPOSITE: break;
+            case SHOOT_BALLS_AND_GO_MIDDLE: break;
         }
 
     }
@@ -76,7 +85,7 @@ public class AutoPicker {
                         maxAmbiguity = target.getPoseAmbiguity();
 
                         //
-                        desiredChassis = Optional.of( new ChassisSpeeds());
+                        desiredChassis = Optional.of(new ChassisSpeeds(0,0,0));
                     }
                 }
             }
@@ -108,4 +117,7 @@ public class AutoPicker {
         return DesiredChassisSpeeds;
     }
 
+    private double scaleDistanceWithControls(double distance) {
+        return 0.0;
+    }
 }
