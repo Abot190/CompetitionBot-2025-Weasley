@@ -1,16 +1,25 @@
 package frc.robot.SubSystem.Logging;
 
 import java.util.HashMap;
+import java.util.function.BooleanSupplier;
+import java.util.jar.Attributes.Name;
 
+import edu.wpi.first.networktables.BooleanArrayEntry;
 import edu.wpi.first.networktables.BooleanArrayPublisher;
+import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.StructArrayEntry;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructEntry;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.struct.Struct;
 import edu.wpi.first.util.struct.StructSerializable;
@@ -22,13 +31,11 @@ public class NerdLog {
 
     static NetworkTable baseTable;
     static HashMap<String, StructPublisher> structPublishers; 
-    static HashMap<String, DoublePublisher> doublePublishers;
-    static HashMap<String, DoubleArrayPublisher> doubleArrayPublishers;
+    static HashMap<String, DoubleEntry> doubleEntries;
+    static HashMap<String, DoubleArrayEntry> doubleArrayEntries;
     static HashMap<String, StructArrayPublisher> structArrayPublishers;
-    static HashMap<String, BooleanPublisher> booleanPublishers;
-    static HashMap<String, BooleanArrayPublisher> boolArrayPublishers;
-    static HashMap<String,GenericEntry> shuffleLogs;
-    static HashMap<String, ShuffleboardTab> Shuffletabs;
+    static HashMap<String, BooleanEntry> booleanEntries;
+    static HashMap<String, BooleanArrayEntry> boolArrayEntries;
     static NetworkTableInstance tableInst;
 
 
@@ -56,13 +63,11 @@ public class NerdLog {
         tableInst = NetworkTableInstance.getDefault();
         baseTable = tableInst.getTable("Robot");
         structPublishers = new HashMap<>();
-        doublePublishers = new HashMap<>();
-        doubleArrayPublishers = new HashMap<>();
+        doubleEntries = new HashMap<>();
+        doubleArrayEntries = new HashMap<>();
         structArrayPublishers = new HashMap<>();
-        booleanPublishers = new HashMap<>();
-        boolArrayPublishers = new HashMap<>();
-        shuffleLogs = new HashMap<>();
-        Shuffletabs = new HashMap<>();
+        booleanEntries = new HashMap<>();
+        boolArrayEntries = new HashMap<>();
         
     }
 
@@ -93,43 +98,72 @@ public class NerdLog {
     }
 
     public static void logDouble(String name, double variable) {
-        if (!doublePublishers.containsKey(name)) {
-            DoublePublisher dubPub = baseTable.getDoubleTopic(name).publish();
-            doublePublishers.put(name, dubPub);
+        if (!doubleEntries.containsKey(name)) {
+            DoubleEntry dubPub = baseTable.getDoubleTopic(name).getEntry(variable);
+            doubleEntries.put(name, dubPub);
         }
 
-        DoublePublisher dubPub = doublePublishers.get(name);
+        DoubleEntry dubPub = doubleEntries.get(name);
         dubPub.set(variable);
+    }
+
+    /**
+     * make sure the variable has at least been given a initial logvar() before using this method
+     * @param name - the name of the variable you are getting
+     * @return - the value as presented on a dashboard
+     */
+    public static double getdouble(String name) {
+        if (!doubleEntries.containsKey(name)) return 0.0;
+
+        return doubleEntries.get(name).get();
     }
 
     public static void logDoubleArray(String name, double[] variable) {
-        if (!doubleArrayPublishers.containsKey(name)) {
-            DoubleArrayPublisher dubPub = baseTable.getDoubleArrayTopic(name).publish();
-            doubleArrayPublishers.put(name, dubPub);
+        if (!doubleArrayEntries.containsKey(name)) {
+            DoubleArrayEntry dubPub = baseTable.getDoubleArrayTopic(name).getEntry(variable);
+            doubleArrayEntries.put(name, dubPub);
         }
 
-        DoubleArrayPublisher dubPub = doubleArrayPublishers.get(name);
+        DoubleArrayEntry dubPub = doubleArrayEntries.get(name);
         dubPub.set(variable);
     }
 
+    public static double[] getDoubleArray(String name) {
+        if (!doubleArrayEntries.containsKey(name)) return new double[0];
+
+        return doubleArrayEntries.get(name).get();
+    }
+
     public static void logBooleanVariable(String name, boolean variable) {
-        if (!booleanPublishers.containsKey(name)) {
-            BooleanPublisher boolPub = baseTable.getBooleanTopic(name).publish();
-            booleanPublishers.put(name, boolPub);
+        if (!booleanEntries.containsKey(name)) {
+            BooleanEntry boolPub = baseTable.getBooleanTopic(name).getEntry(variable);
+            booleanEntries.put(name, boolPub);
         }
 
-        BooleanPublisher boolPub = booleanPublishers.get(name);
+        BooleanEntry boolPub = booleanEntries.get(name);
         boolPub.set(variable);
     }
 
+    public static Boolean getBoolean(String name) {
+        if (!booleanEntries.containsKey(name)) return false;
+
+        return booleanEntries.get(name).get();
+    }
+
     public static void logBooleanArray(String name, boolean[] variables) {
-        if (!boolArrayPublishers.containsKey(name)) {
-            BooleanArrayPublisher boolArrPub= baseTable.getBooleanArrayTopic(name).publish();
-            boolArrayPublishers.put(name, boolArrPub);
+        if (!boolArrayEntries.containsKey(name)) {
+            BooleanArrayEntry boolArrPub= baseTable.getBooleanArrayTopic(name).getEntry(variables);
+            boolArrayEntries.put(name, boolArrPub);
         }
 
-        BooleanArrayPublisher boolArrPub = boolArrayPublishers.get(name);
+        BooleanArrayEntry boolArrPub = boolArrayEntries.get(name);
         boolArrPub.set(variables);
+    }
+
+    public static boolean[] getBooleanArray(String name) {
+        if (!boolArrayEntries.containsKey(name)) return new boolean[0];
+
+        return boolArrayEntries.get(name).get();
     }
 
     }
