@@ -19,6 +19,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.SubSystem.Climb.Climb;
 import frc.robot.SubSystem.Climb.ClimbIO;
@@ -127,8 +128,9 @@ public class AutoPicker {
         //this is going to be the holy mother of nesting
         do {
             //move closer to setpoint:
+            Optional<Pose2d> desiredPose = Optional.empty();
             Optional<ChassisSpeeds> desiredChassis = Optional.empty();
-            Optional<List<PhotonTrackedTarget>>[] targetsOptional = vision.getTargets() ;
+            Optional<List<PhotonTrackedTarget>>[] targetsOptional = vision.getTargets();
             for (int i = 0; i < targetsOptional.length; i++) {
                 if (targetsOptional[i].isEmpty()) continue;
 
@@ -148,29 +150,35 @@ public class AutoPicker {
                             robotToCamera[i].getRotation().getY(),
                             target.getPitch());
 
-                        double globalTargetAngleDeg = 0.00;
+                        double globalTargetAngleDeg = 180;//target.getFiducialId() == 15 || target.getFiducialId() == 16? 180 : 0; // gottabe either 180 || 0
+                        double forwardDistance = distancefromTarget * Math.sin(target.getYaw());
+                        double sidewaysDistance = distancefromTarget * Math.cos(target.getYaw());
+                        Pose2d currentPose = drive.getEstimatedPose();
+                        desiredPose = Optional.of(new Pose2d(currentPose.getX() + forwardDistance, 
+                            sidewaysDistance + sidewaysDistance,
+                             new Rotation2d(Units.degreesToRadians(globalTargetAngleDeg))));
                         
-
-                        //all robot-relative;
-                        double forwardspeed = distancefromTarget * Math.cos(target.getYaw());
-                        double sidewaysSpeed = distancefromTarget * Math.sin(target.getYaw());
-                        double rotation = target.getYaw();
-
-                        //i forgor that the chassis speeds can transform robot relatve to field-relative speciic
-                        desiredChassis = Optional.of(ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(forwardspeed,sidewaysSpeed,rotation),
-                            drive.getEstimatedPose().getRotation()));
                         
                         
                     }
                 }
             }
 
+            if (!desiredPose.isEmpty()) {
+                desiredChassis = Optional.of(driveControls.calculate(drive.getEstimatedPose(),
+                 desiredPose.get(), desiredVelocityMetersPerSec,desiredPose.get().getRotation()));
+            }
+
             if (desiredChassis.isEmpty()) desiredChassis = Optional.of(getDesiredChassisSpeeds()); // use previous chassisSpeed;
             else {
-                //set new chassisSpeeds
+                DesiredChassisSpeeds = desiredChassis.get();
             }
 
             captureDesiredChassisSpeeds(desiredChassis.get());
+
+            drive.move(DesiredChassisSpeeds.vxMetersPerSecond, DesiredChassisSpeeds.vyMetersPerSecond, DesiredChassisSpeeds.omegaRadiansPerSecond);
+
+            AtClimb = driveControls.atReference();
 
             //check if we made it to setpoint
         } while (!AtClimb);
