@@ -10,6 +10,8 @@ public class SwerveConstants {
     //dimensions
     public static final double driveWidth = Units.inchesToMeters(17);
     public static final double driveLength = Units.inchesToMeters(13.5);
+    private static final double frontdriveWidth = Units.inchesToMeters(17);
+    private static final double backdriveWidth = Units.inchesToMeters(17);
 
     //turn motor
     public static final double turnGearRatio = 8.75;
@@ -28,8 +30,8 @@ public class SwerveConstants {
     public static final Pose2d initialPose = new Pose2d();
     public static final double wheelRadiusMeters = Units.inchesToMeters(1.5);
     //Order: FL,FR,BL,BR. for anything numbered accross the modules, assume this order.
-    public static final Translation2d[] moduletranslations = {new Translation2d(driveLength/2, driveWidth/2), new Translation2d(driveLength/2, -driveWidth/2),
-        new Translation2d(-driveLength/2, driveWidth/2), new Translation2d(-driveLength/2, -driveWidth/2)};
+    public static final Translation2d[] moduletranslations = {new Translation2d(driveLength/2, frontdriveWidth/2), new Translation2d(driveLength/2, -frontdriveWidth/2),
+        new Translation2d(-driveLength/2, backdriveWidth/2), new Translation2d(-driveLength/2, -backdriveWidth/2)};
     public static final double mass_KG = 45.3592;
     public static final double MomentOfInertia = 0.00;
     public static final int GyroCANID = RobotMap.pidgeon2CANID; 
