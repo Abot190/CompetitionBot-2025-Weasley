@@ -6,6 +6,5 @@ public interface GyroIO {
     }
 
     public default void reset() {
-
     }
 }
