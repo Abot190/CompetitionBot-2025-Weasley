@@ -111,4 +111,9 @@ public class JoystickIO implements ControllerIO{
         return joystick.getRawButton(Buttons.B.getButton());
     }
 
+    @Override
+    public boolean resetGyro() {
+        return joystick.getRawButtonPressed(Buttons.RESET.getButton());
+    }
+
 }

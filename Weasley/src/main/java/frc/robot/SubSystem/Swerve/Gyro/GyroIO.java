@@ -4,4 +4,8 @@ public interface GyroIO {
     public default double getAngleRad() {
         return 0.0;
     }
+
+    public default void reset() {
+
+    }
 }

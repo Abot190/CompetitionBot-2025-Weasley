@@ -36,25 +36,25 @@ public class RobotContainer {
   Drive swerve;
   FuelControl fuelCrtl;
   ClimbIO climb;
+  GyroIO gyro;
 
   public RobotContainer() {
     NerdLog.startLog();
    GroupLogger.startGroupLogger();
    
    ModuleIO[] modules = new ModuleIO[4];
-    GyroIO gyro;
     if (Robot.isReal()) {
       for (int i = 0; i <= 3; i++) {
         modules[i] = new Module(i, RobotMap.SwerveTurnMotors[i], RobotMap.SwerveDriveMotors[i]);
       }
-      gyro = new Pidgeon2IO();
+      this.gyro = new Pidgeon2IO();
     }
     else {
       for (int i = 0; i<=3; i++) {
         modules[i] = new ModuleSIm(i);
       }
-      if (modules[0].getSwerveSim().isPresent()) gyro = new GyroSim(modules[0].getSwerveSim().get().getGyroSimulation());
-      else gyro = new GyroSim();
+      if (modules[0].getSwerveSim().isPresent()) this.gyro = new GyroSim(modules[0].getSwerveSim().get().getGyroSimulation());
+      else this.gyro = new GyroSim();
     }
     
     swerve = new Drive(gyro, modules);
@@ -85,6 +85,7 @@ public class RobotContainer {
     if (Controller.climbUp()) climb.climbUp();
     else if (Controller.climbDown()) climb.climbDown();
     else climb.stop();
+    if (Controller.resetGyro()) gyro.reset();
   }
 
   public void disabledPeriodic() {

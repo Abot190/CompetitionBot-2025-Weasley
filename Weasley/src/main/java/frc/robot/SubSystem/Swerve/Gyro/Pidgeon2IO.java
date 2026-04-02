@@ -28,4 +28,9 @@ public class Pidgeon2IO  implements GyroIO {
         BaseStatusSignal.refreshAll(yaw);
         return Units.degreesToRadians(yaw.getValueAsDouble());
     }
+
+    @Override
+    public void reset() {
+        gyro.getConfigurator().setYaw(0.0);
+    }
 }
