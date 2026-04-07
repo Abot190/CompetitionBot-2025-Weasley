@@ -10,8 +10,7 @@ public class DriverCam {
 
     public DriverCam(int ResloutionWidth, int ResolutionHeight,int FPS) {
         //make camera:
-        UsbCamera Cam = CameraServer.startAutomaticCapture("IntakeCam", 0);
-
+        UsbCamera Cam = CameraServer.startAutomaticCapture();
         //configure camera:
         Cam.setResolution(ResloutionWidth, ResolutionHeight); //TODO configure resolution
         Cam.setFPS(FPS); //todo configure FPS

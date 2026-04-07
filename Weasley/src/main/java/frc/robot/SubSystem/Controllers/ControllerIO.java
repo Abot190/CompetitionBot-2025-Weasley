@@ -36,8 +36,8 @@ public interface ControllerIO {
 
     public default boolean climbDown() {return false;}
 
-    public default double getAimAssistAdjustment() {
-        return 0.0;
+    public default boolean getAimAssistAdjustment() {
+        return false;
     }
 
     public default boolean resetGyro() {

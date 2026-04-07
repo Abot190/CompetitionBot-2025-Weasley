@@ -71,7 +71,7 @@ public class AimAssist {
                 
                 yawPerCam[i] = target.getYaw();
                 if (target.getPoseAmbiguity() > 0.2) continue;
-                   reccomendedHeading = Units.degreesToRadians(target.getYaw() - degreesRobotFront[i]);
+                reccomendedHeading = Units.degreesToRadians(target.getYaw() - degreesRobotFront[i]);
                    
                 }
             }

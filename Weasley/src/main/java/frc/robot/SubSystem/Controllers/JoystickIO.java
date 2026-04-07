@@ -112,6 +112,11 @@ public class JoystickIO implements ControllerIO{
     }
 
     @Override
+    public boolean getAimAssistAdjustment() {
+        return joystick.getRawButton(Buttons.C.getButton());
+    }
+
+    @Override
     public boolean resetGyro() {
         return joystick.getRawButtonPressed(Buttons.RESET.getButton());
     }

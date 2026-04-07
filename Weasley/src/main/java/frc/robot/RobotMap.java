@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -41,8 +42,13 @@ public class RobotMap {
     public static PhotonCamera c270Cam = new PhotonCamera("C270");
     public static PhotonCamera nexigoCam = new PhotonCamera("NEXIGO");
     public static Transform3d robotToCameras[] = {
-        new Transform3d(0, 0, 0, new Rotation3d(0,0,0)),
-        new Transform3d(0, 0, 0, new Rotation3d(0,0,0))
+        new Transform3d(Units.inchesToMeters(7.5), 0, 0, new Rotation3d(-20,0,0)), //c270
+        new Transform3d(Units.inchesToMeters(7.5), 0, 0, new Rotation3d(25,0,0)) // nexigo
     };
+
+    public static double[] cameraDegreesFront = {-25.15, 19.19}; 
+
+    //c270 = -25.15 degrees offset 20 deg
+    // nexigo = 19.9 degrees 0ffset 25 deg
     
 }

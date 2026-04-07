@@ -54,6 +54,7 @@ public class Vision implements VisionIO{
         confirmedPoses = new Optional[cameras.length];
         targets = new Optional[cameras.length];
         latestResults = new PhotonPipelineResult[cameras.length];
+        EstimatedPoses = new Optional[cameras.length];
 
         for (int i = 0 ; i < estimators.length; i++ ) estimators[i] = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded), RobotToCameras[i]);
         periodic();
@@ -69,7 +70,7 @@ public class Vision implements VisionIO{
 
 
             /*
-             * evrything after this point will follow a get-then-check pattern:
+             * everything after this point will follow a get-then-check pattern:
              * this helps because almost nothing is garenteed
              */
             allPhotonResults[i] = cameras[i].getAllUnreadResults();
@@ -89,26 +90,26 @@ public class Vision implements VisionIO{
 
             if (targets[i].get().size() > 1) EstimatedPoses[i] = estimators[i].estimateCoprocMultiTagPose(latestResults[i]);
             else if (targets[i].get().size() == 1) EstimatedPoses[i] = estimators[i].estimatePnpDistanceTrigSolvePose(latestResults[i]);
+            else EstimatedPoses[i] = Optional.empty();
 
 
             //filtering the poses:
 
             boolean keepPose = true;
 
-            if (targets[i].get().size() != 0) keepPose = false; // must have target
-            else if (targets[i].get().size() == 1) {
+            if (targets[i].get().size() == 0) keepPose = false; // must have target
+            else if (targets[i].get().size() >= 1) {
                 for (PhotonTrackedTarget target : targets[i].get()) {
                     if (target.getPoseAmbiguity() > maxAmbiguity) keepPose = false; // must be discernable
                 }
             }
 
-            if (EstimatedPoses[i].isEmpty()) keepPose = false;
+            if (EstimatedPoses[i].isEmpty()) continue;
 
                 //must be in the field:
-            if (EstimatedPoses[i].get().estimatedPose.getY() < 0 && EstimatedPoses[i].get().estimatedPose.getY() > 8.07) keepPose = false;
-
+            if (EstimatedPoses[i].get().estimatedPose.getY() < 0 && EstimatedPoses[i].get().estimatedPose.getY() > 8.07) {keepPose = false;}
             if (keepPose) {
-                NerdLog.logStructvariable("VisionPoses",EstimatedPoses[i].get().estimatedPose.toPose2d(), Pose2d.struct);
+                NerdLog.logStructvariable("Vision/Poses",EstimatedPoses[i].get().estimatedPose.toPose2d(), Pose2d.struct);
                 drive.addvision(EstimatedPoses[i].get().estimatedPose.toPose2d(), latestResults[i].getTimestampSeconds()); // can also use Timer.getFPGATimestamp() if current doesn't work
             }
         }
